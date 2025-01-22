@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:app_clip/pages/app_clip_page.dart';
+import 'package:app_clip/pages/unknown_page.dart';
 import 'package:app_clip/utils.dart';
 import 'package:flutter/material.dart';
+
+import 'pages/home_page.dart';
 
 Future<void> main() async {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
-      final type = await Utils.getTargetType();
+      final type = await UtilsAppClip.getTargetType();
       runApp(MyApp(type: type));
     },
     (error, stack) => log('Uncaught error: $error'),
@@ -24,20 +28,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: Scaffold(
-        backgroundColor: backgroundColor,
-        body: Center(
-          child: Text(type.name),
-        ),
-      ),
+      home: _getHome(),
     );
   }
 
-  Color get backgroundColor {
+  Widget _getHome() {
     return switch (type) {
-      AppTargetType.runner => Colors.blue,
-      AppTargetType.appClip => Colors.red,
-      AppTargetType.unknown => Colors.yellow,
+      AppTargetType.runner => const HomePage(),
+      AppTargetType.appClip => const AppClipPage(),
+      AppTargetType.unknown => const UnknownPage(),
     };
   }
 }
